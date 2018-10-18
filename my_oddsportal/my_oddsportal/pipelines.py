@@ -9,11 +9,7 @@ import json
 
 class SplashTestPipeline(object):
     def __init__(self):
-        # self.file = open('data.json', 'wb')
-        self.file = codecs.open(
-            'spider.txt', 'w', encoding='utf-8')
-        # self.file = codecs.open(
-        #     'spider.json', 'w', encoding='utf-8')
+        pass
 
     def process_item(self, item, spider):
         line = json.dumps(dict(item), ensure_ascii=False) + "\n"
