@@ -33,3 +33,11 @@ class SplashTestItem(scrapy.Item):
     # post_view_count = scrapy.Field()
     # post_comment_count = scrapy.Field()
     # url = scrapy.Field()
+
+class WinNbaGame(scrapy.Item):
+    game_id = scrapy.Field()
+    home = scrapy.Field()
+    away = scrapy.Field()
+    final_score = scrapy.Field()
+    time = scrapy.Field()
+    game_type = scrapy.Field() 
