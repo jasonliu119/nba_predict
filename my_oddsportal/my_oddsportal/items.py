@@ -38,6 +38,7 @@ class WinNbaGame(scrapy.Item):
     game_id = scrapy.Field()
     home = scrapy.Field()
     away = scrapy.Field()
-    final_score = scrapy.Field()
+    home_score = scrapy.Field()
+    away_score = scrapy.Field()
     time = scrapy.Field()
     game_type = scrapy.Field() 

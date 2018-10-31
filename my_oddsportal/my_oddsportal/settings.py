@@ -23,6 +23,7 @@ SPLASH_URL = 'http://127.0.0.1:8050'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
+RETRY_TIMES = 3
 
 DOWNLOADER_MIDDLEWARES = {
     'scrapy_splash.SplashCookiesMiddleware': 723,
