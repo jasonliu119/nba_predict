@@ -50,7 +50,7 @@ class SplashSpider(Spider):
                 j = j + 1
                 yield SplashRequest(one_month_url
                                     , self.parse
-                                    , args = {'wait': '20'}
+                                    , args = {'wait': '60'}
                                     , meta = {'season': season_str, "month": str(self.months[j])}
                                     #,endpoint='render.json'
                                     )
@@ -77,6 +77,10 @@ class SplashSpider(Spider):
             game['game_type'] = game_type[0]
 
             time_str = game_tr.xpath('./td[2]/text()').extract()[0]
+            # timezone different:
+            # crawler: time 12-02 00:00, id 290166, home 奥兰多魔术, away 金州勇士
+            # v.s.
+            # web: time 12-01 17:00
             game['time'] = time_str
 
             home = game_tr.xpath('./td[3]/a/text()').extract()[0]

@@ -4,7 +4,6 @@
 #
 # See documentation in:
 # http://doc.scrapy.org/en/latest/topics/items.html
-
 import scrapy
 
 
@@ -41,4 +40,21 @@ class WinNbaGame(scrapy.Item):
     home_score = scrapy.Field()
     away_score = scrapy.Field()
     time = scrapy.Field()
-    game_type = scrapy.Field() 
+    game_type = scrapy.Field()
+
+class WinOverUnderItem(scrapy.Item):
+    game_id = scrapy.Field()
+    title = scrapy.Field()
+    # the following fields are array [time, score, odd_over, odd_under, is_purple]
+    # 澳门
+    macau = scrapy.Field()
+    # 易胜博
+    ysb8 = scrapy.Field()
+    # 皇冠
+    crown = scrapy.Field()
+    # bet365
+    bet365 = scrapy.Field()
+    # 韦德
+    wade = scrapy.Field()
+    # 利记
+    sbo = scrapy.Field()
