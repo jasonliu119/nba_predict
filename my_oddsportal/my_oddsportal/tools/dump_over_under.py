@@ -2,7 +2,7 @@
 import pickle
 from ..items import WinOverUnderItem
 
-game_id = '290495'
+game_id = '290090'
 f = open('./data/over_under/2017-2018/{}.txt'.format(game_id), 'r')
 count = 0
 

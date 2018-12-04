@@ -12,7 +12,11 @@ import pickle
 import re
 import os
 
-IS_TEST = True
+#  scrapy crawl win_over_under
+
+IS_TEST = False
+
+season = "2018-2019" # 2017-2018
 
 OVER_UNDER_URL = "http://nba.win0168.com/odds/OverDown_n.aspx?id="
 
@@ -20,7 +24,7 @@ def create_dir_if_not_exist(directory):
     if not os.path.exists(directory):
         os.makedirs(directory)
 
-def get_game_ids(season):
+def get_game_ids():
     ret = []
     f = open('./data/win_game-' + season, 'r')
     count = 0
@@ -35,12 +39,21 @@ def get_game_ids(season):
         except EOFError:
             f.close()
             print(" --------- read " + str(count) + " games")
+            break
+    return ret
+
+def get_specified_game_ids():
+    ret = []
+    ret.append('325673')
+    ret.append('325661')
+    ret.append('325623')
+    ret.append('325666')
     return ret
 
 class SplashSpider(Spider):
     name = 'win_over_under'
-    season = "2017-2018"
-    game_ids = get_game_ids(season)
+    # game_ids = get_game_ids()
+    game_ids = get_specified_game_ids()
     over_under_dir = './data/over_under/' + season + '/'
     create_dir_if_not_exist(over_under_dir)
     error_games_file = open(over_under_dir + 'error_games_file.txt', 'wb')

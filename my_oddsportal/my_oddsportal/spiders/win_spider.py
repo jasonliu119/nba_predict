@@ -18,8 +18,10 @@ def get_game_id(url):
 
 class SplashSpider(Spider):
     name = 'win_nba_games'
-    seasons = [[2017, 2018]]
-    months = [10, 11, 12, 1, 2, 3, 4]
+    # seasons = [[2017, 2018]]
+    # months = [10, 11, 12, 1, 2, 3, 4]
+    seasons = [[2018, 2019]]
+    months = [10, 11]
     game_count = 0
     success_parsed_count = 0
     seasoned_urls = []
@@ -50,7 +52,7 @@ class SplashSpider(Spider):
                 j = j + 1
                 yield SplashRequest(one_month_url
                                     , self.parse
-                                    , args = {'wait': '60'}
+                                    , args = {'wait': '30'}
                                     , meta = {'season': season_str, "month": str(self.months[j])}
                                     #,endpoint='render.json'
                                     )
