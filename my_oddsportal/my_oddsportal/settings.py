@@ -15,7 +15,9 @@ BOT_NAME = 'my_oddsportal'
 
 SPIDER_MODULES = ['my_oddsportal.spiders']
 NEWSPIDER_MODULE = 'my_oddsportal.spiders'
-USER_AGENT = "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.93 Safari/537.36"
+# USER_AGENT = "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.93 Safari/537.36"
+USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64; rv:7.0.1) Gecko/20100101 Firefox/7.7'
+DOWNLOAD_DELAY = 0.25 
 
 SPLASH_URL = 'http://127.0.0.1:8050'
 # Crawl responsibly by identifying yourself (and your website) on the user-agent

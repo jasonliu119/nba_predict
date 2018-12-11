@@ -23,6 +23,29 @@ dict_id_score[325673] = 189
 dict_id_score[325661] = 211
 dict_id_score[325623] = 188
 dict_id_score[325666] = 227
+ 
+dict_id_score[325675] = 239
+dict_id_score[325682] = 201
+dict_id_score[325690] = 212
+dict_id_score[325696] = 208
+dict_id_score[325698] = 220
+dict_id_score[325700] = 184
+dict_id_score[325701] = 204
+dict_id_score[325705] = 203
+dict_id_score[325706] = 219
+dict_id_score[325709] = 192
+dict_id_score[325720] = 215
+dict_id_score[325724] = 199
+dict_id_score[325725] = 181
+dict_id_score[325729] = 176
+dict_id_score[325730] = 205
+dict_id_score[325750] = 197
+dict_id_score[325751] = 216
+dict_id_score[325759] = 194
+dict_id_score[325760] = 213
+dict_id_score[325773] = 217
+dict_id_score[325777] = 210
+dict_id_score[325781] = 186
 
 from ..items import WinOverUnderItem
 
@@ -184,125 +207,158 @@ def dump_game(item):
     print(dump(item, 'wade'))
     print(dump(item, 'sbo'))
 
-all_dec_list = []
-
-count = 0
-all_dec_count = 0
-
-all_dec_bet365_under = 0
-all_dec_wade_under = 0
-all_dec_sbo_under = 0
-all_dec_ysb8_under = 0
-
-meta_missing = 0
-
-bet365_dec_count = 0
-wade_dec_count = 0
-sbo_dec_count = 0
-ysb8_dec_count = 0
-
-bet365_dec_and_under_count = 0
-wade_dec_and_under_count = 0
-sbo_dec_and_under_count = 0
-ysb8_dec_and_under_count = 0
-
 # f = open('./data/over_under/2017-2018/{}.txt'.format(game_id), 'r')
-directory = './data/over_under/2017-2018/'
-# directory = './data/over_under/2018-2019/'
+
 cur_id = 0
 import os
-for filename in os.listdir(directory):
-    if filename == 'error_games_file.txt':
-        continue
+import sys
 
-    f = open((directory + '{}').format(filename), 'r')
+def run_decreasing_rule(directory, check_final_score=True):
+    all_dec_list = []
+    not_all_dec_list = []
 
-    item = pickle.load(f)
-    count = count + 1
+    count = 0
+    all_dec_count = 0
 
-    print " === bet365:"
-    is_dec_bet365, score_bet365, first_ts_bet365, from_algo_bet365 = is_decreasing(item['bet365'])
-    print " === wade:"
-    is_dec_wade, score_wade, first_ts_wade, from_algo_wade = is_decreasing(item['wade'], True)
-    print " === sbo:"
-    is_dec_sbo, score_sbo, first_ts_sbo, from_algo_sbo = is_decreasing(item['sbo'])
-    print " === ysb8:"
-    is_dec_ysb8, score_ysb8, first_ts_ysb8, from_algo_ysb8 = is_decreasing(item['ysb8'])
+    all_dec_bet365_under = 0
+    all_dec_wade_under = 0
+    all_dec_sbo_under = 0
+    all_dec_ysb8_under = 0
 
-    cur_id = int(item['game_id'].strip())
+    meta_missing = 0
 
-    print "first_ts_bet365: " + str(first_ts_bet365)
-    print "first_ts_wade: " + str(first_ts_wade)
-    print "first_ts_sbo: " + str(first_ts_sbo)
-    print "first_ts_ysb8: " + str(first_ts_ysb8)
+    bet365_dec_count = 0
+    wade_dec_count = 0
+    sbo_dec_count = 0
+    ysb8_dec_count = 0
 
-    if cur_id not in dict_id_score:
-        print " --- meta missing " + item['game_id']
-        meta_missing = meta_missing + 1
+    bet365_dec_and_under_count = 0
+    wade_dec_and_under_count = 0
+    sbo_dec_and_under_count = 0
+    ysb8_dec_and_under_count = 0
 
-    if not from_algo_bet365 and not from_algo_wade:
-        continue
+    for filename in os.listdir(directory):
+        if filename == 'error_games_file.txt':
+            continue
 
-    if not from_algo_sbo and not from_algo_ysb8:
-        continue
+        f = open((directory + '{}').format(filename), 'r')
 
-    final_score = dict_id_score[cur_id]
+        item = pickle.load(f)
+        count = count + 1
 
-    if is_dec_bet365:
-        bet365_dec_count = bet365_dec_count + 1
-        if final_score < score_bet365:
-            bet365_dec_and_under_count = bet365_dec_and_under_count + 1
+        print " === bet365:"
+        is_dec_bet365, score_bet365, first_ts_bet365, from_algo_bet365 = is_decreasing(item['bet365'])
+        print " === wade:"
+        is_dec_wade, score_wade, first_ts_wade, from_algo_wade = is_decreasing(item['wade'], True)
+        print " === sbo:"
+        is_dec_sbo, score_sbo, first_ts_sbo, from_algo_sbo = is_decreasing(item['sbo'])
+        print " === ysb8:"
+        is_dec_ysb8, score_ysb8, first_ts_ysb8, from_algo_ysb8 = is_decreasing(item['ysb8'])
 
-    if is_dec_wade:
-        wade_dec_count = wade_dec_count + 1
-        if final_score < score_wade:
-            wade_dec_and_under_count = wade_dec_and_under_count + 1
+        cur_id = int(item['game_id'].strip())
 
-    if is_dec_sbo:
-        sbo_dec_count = sbo_dec_count + 1
-        if final_score < score_sbo:
-            sbo_dec_and_under_count = sbo_dec_and_under_count + 1
+        print "first_ts_bet365: " + str(first_ts_bet365)
+        print "first_ts_wade: " + str(first_ts_wade)
+        print "first_ts_sbo: " + str(first_ts_sbo)
+        print "first_ts_ysb8: " + str(first_ts_ysb8)
 
-    if is_dec_ysb8:
-        ysb8_dec_count = ysb8_dec_count + 1
-        if final_score < score_ysb8:
-            ysb8_dec_and_under_count = ysb8_dec_and_under_count + 1
+        if check_final_score and cur_id not in dict_id_score:
+            print " --- meta missing " + item['game_id']
+            meta_missing = meta_missing + 1
 
-    #  min(first_ts_sbo, first_ts_ysb8) > min(first_ts_wade, first_ts_bet365)
-    if is_dec_bet365 and is_dec_sbo and is_dec_ysb8 and is_dec_wade and min(first_ts_sbo, first_ts_ysb8) > min(first_ts_wade, first_ts_bet365):
-        all_dec_count = all_dec_count + 1
-        all_dec_list.append(item["game_id"])
-        if final_score < score_bet365:
-            all_dec_bet365_under = all_dec_bet365_under + 1
-        if final_score < score_wade:
-            all_dec_wade_under = all_dec_wade_under + 1
-        if final_score < score_sbo:
-            all_dec_sbo_under = all_dec_sbo_under + 1
-        if final_score < score_ysb8:
-            all_dec_ysb8_under = all_dec_ysb8_under + 1
-        #print " ---- is_decreasing " + item['game_id']
+        if not from_algo_bet365 and not from_algo_wade:
+            continue
 
-print(" --------- read totally " + str(count) + " WinOverUnderItem")
-print(" --------- read " + str(meta_missing) + " meta_missing")
-print(" --------- read " + str(all_dec_count) + " all_dec_count")
-print(" --------- read " + str(all_dec_bet365_under) + " all_dec_bet365_under")
-print(" --------- read " + str(all_dec_wade_under) + " all_dec_wade_under")
-print(" --------- read " + str(all_dec_sbo_under) + " all_dec_sbo_under")
-print(" --------- read " + str(all_dec_ysb8_under) + " all_dec_ysb8_under")
-print(" --------------------------- ")
-print(" --------- read " + str(bet365_dec_count) + " bet365_dec_count")
-print(" --------- read " + str(wade_dec_count) + " wade_dec_count")
-print(" --------- read " + str(sbo_dec_count) + " sbo_dec_count")
-print(" --------- read " + str(ysb8_dec_count) + " ysb8_dec_count")
-print(" --------------------------- ")
-print(" --------- read " + str(bet365_dec_and_under_count) + " bet365_dec_and_under_count")
-print(" --------- read " + str(wade_dec_and_under_count) + " wade_dec_and_under_count")
-print(" --------- read " + str(sbo_dec_and_under_count) + " sbo_dec_and_under_count")
-print(" --------- read " + str(ysb8_dec_and_under_count) + " ysb8_dec_and_under_count")
+        if not from_algo_sbo and not from_algo_ysb8:
+            continue
 
-print("=======================")
-for id in all_dec_list:
-    print " ----- match min rule: " + str(id)
+        final_score = 0
+        if check_final_score:
+            final_score = dict_id_score[cur_id]
+
+        if is_dec_bet365:
+            bet365_dec_count = bet365_dec_count + 1
+            if final_score < score_bet365:
+                bet365_dec_and_under_count = bet365_dec_and_under_count + 1
+
+        if is_dec_wade:
+            wade_dec_count = wade_dec_count + 1
+            if final_score < score_wade:
+                wade_dec_and_under_count = wade_dec_and_under_count + 1
+
+        if is_dec_sbo:
+            sbo_dec_count = sbo_dec_count + 1
+            if final_score < score_sbo:
+                sbo_dec_and_under_count = sbo_dec_and_under_count + 1
+
+        if is_dec_ysb8:
+            ysb8_dec_count = ysb8_dec_count + 1
+            if final_score < score_ysb8:
+                ysb8_dec_and_under_count = ysb8_dec_and_under_count + 1
+
+        #  min(first_ts_sbo, first_ts_ysb8) > min(first_ts_wade, first_ts_bet365)
+        if is_dec_bet365 and is_dec_sbo and is_dec_ysb8 and is_dec_wade and min(first_ts_sbo, first_ts_ysb8) > min(first_ts_wade, first_ts_bet365):
+            all_dec_count = all_dec_count + 1
+            all_dec_list.append(item["game_id"])
+            if final_score < score_bet365:
+                all_dec_bet365_under = all_dec_bet365_under + 1
+            if final_score < score_wade:
+                all_dec_wade_under = all_dec_wade_under + 1
+            if final_score < score_sbo:
+                all_dec_sbo_under = all_dec_sbo_under + 1
+            if final_score < score_ysb8:
+                all_dec_ysb8_under = all_dec_ysb8_under + 1
+        else:
+            not_all_dec_list.append(item["game_id"]);
+
+            #print " ---- is_decreasing " + item['game_id']
+
+    print(" --------------------------- ")
+    print(" --------- read " + str(bet365_dec_count) + " bet365_dec_count")
+    print(" --------- read " + str(wade_dec_count) + " wade_dec_count")
+    print(" --------- read " + str(sbo_dec_count) + " sbo_dec_count")
+    print(" --------- read " + str(ysb8_dec_count) + " ysb8_dec_count")
+    print(" --------------------------- ")
+    if check_final_score:
+        print(" --------- read " + str(bet365_dec_and_under_count) + " bet365_dec_and_under_count")
+        print(" --------- read " + str(wade_dec_and_under_count) + " wade_dec_and_under_count")
+        print(" --------- read " + str(sbo_dec_and_under_count) + " sbo_dec_and_under_count")
+        print(" --------- read " + str(ysb8_dec_and_under_count) + " ysb8_dec_and_under_count")
+
+    print(" --------- read totally " + str(count) + " WinOverUnderItem")
+    print(" --------- read " + str(meta_missing) + " meta_missing")
+    print(" --------- read " + str(all_dec_count) + " all_dec_count")
+
+    if check_final_score:
+        print(" --------- read " + str(all_dec_bet365_under) + " all_dec_bet365_under")
+        print(" --------- read " + str(all_dec_wade_under) + " all_dec_wade_under")
+        print(" --------- read " + str(all_dec_sbo_under) + " all_dec_sbo_under")
+        print(" --------- read " + str(all_dec_ysb8_under) + " all_dec_ysb8_under")
+
+    print("=======================")
+    for id in all_dec_list:
+        print " ----- match min rule: " + str(id)
+
+    for id in not_all_dec_list:
+        print " ----- not match min rule: " + str(id)
+
+def main():
+    # directory = './data/over_under/2017-2018/'
+    directory_default = './data/over_under/2018-2019/'
+    directory = ''
+
+    check_final_score = True
+    if len(sys.argv) > 1:
+        directory = sys.argv[1]
+        if len(sys.argv) > 2:
+            check_final_score = False
+    else:
+        directory = directory_default
+
+    run_decreasing_rule(directory, check_final_score)
+
+if __name__ == "__main__":
+    main()
 
 # 325661 ysb no change
 # 
