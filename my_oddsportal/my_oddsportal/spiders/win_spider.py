@@ -21,7 +21,14 @@ class SplashSpider(Spider):
     # seasons = [[2017, 2018]]
     # months = [10, 11, 12, 1, 2, 3, 4]
     seasons = [[2018, 2019]]
-    months = [10, 11]
+
+    import os
+    for season in seasons:
+        file_name = 'data/meta/win_game-' + str(season[0]) + "-" + str(season[1])
+        if os.path.exists(file_name):
+            os.remove(file_name)
+
+    months = [10, 11, 12, 1, 2, 3, 4]
     game_count = 0
     success_parsed_count = 0
     seasoned_urls = []
@@ -52,13 +59,36 @@ class SplashSpider(Spider):
                 j = j + 1
                 yield SplashRequest(one_month_url
                                     , self.parse
-                                    , args = {'wait': '30'}
+                                    , args = {'timeout': 1800, 'wait': '30'}
                                     , meta = {'season': season_str, "month": str(self.months[j])}
                                     #,endpoint='render.json'
                                     )
 
+    def log_error(self, path, ):
+        with open(path, 'a+') as f:
+            f.write(msg)
+
     def parse(self, response):
+        def get_first_if_any(array):
+                if array is not None and len(array) > 0:
+                    return array[0]
+                return "0";
+
+        def get_game_id(analysis):
+            # e.g., analysis/325991.htm
+            if analysis is not None and len(analysis) > 0:
+                analysis_url = analysis[0]
+                if analysis_url.strip() == '':
+                    return "0"
+
+                import re
+                ret = re.findall(r"\d{6}", analysis_url)
+                if len(ret) == 1:
+                    return ret[0]
+            return "0"
+
         season = response.meta['season']
+        directory = 'data/meta/'
         month = response.meta['month']
         self.logger.info("********** parsing month " + month + " of season " + season)
 
@@ -88,17 +118,16 @@ class SplashSpider(Spider):
             home = game_tr.xpath('./td[3]/a/text()').extract()[0]
             game['home'] = home
 
-            stats_url = game_tr.xpath('./td[4]/a/@href').extract()[0]
-            game['game_id'] = get_game_id(stats_url)
+            game['game_id'] = get_game_id(game_tr.xpath('./td[8]/a[1]/@href').extract())
 
             away = game_tr.xpath('./td[5]/a/text()').extract()[0]
             game['away'] = away
 
-            home_score = game_tr.xpath('./td[4]/a/span[1]/text()').extract()[0]
+            home_score = get_first_if_any(game_tr.xpath('./td[4]/a/span[1]/text()').extract())
             game['home_score'] = home_score
 
-            away_score = game_tr.xpath('./td[4]/a/span[2]/text()').extract()[0]
+            away_score = get_first_if_any(game_tr.xpath('./td[4]/a/span[2]/text()').extract())
             game['away_score'] = away_score
- 
-            with open('data/win_game-' + season, 'a+') as f:
+
+            with open(directory + '/win_game-' + season, 'a+') as f:
                 pickle.dump(game, f)

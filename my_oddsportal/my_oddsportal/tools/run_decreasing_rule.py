@@ -214,7 +214,7 @@ import os
 import sys
 
 def run_decreasing_rule(directory, check_final_score=True):
-    all_dec_list = []
+    all_dec_map = {}
     not_all_dec_list = []
 
     count = 0
@@ -299,7 +299,7 @@ def run_decreasing_rule(directory, check_final_score=True):
         #  min(first_ts_sbo, first_ts_ysb8) > min(first_ts_wade, first_ts_bet365)
         if is_dec_bet365 and is_dec_sbo and is_dec_ysb8 and is_dec_wade and min(first_ts_sbo, first_ts_ysb8) > min(first_ts_wade, first_ts_bet365):
             all_dec_count = all_dec_count + 1
-            all_dec_list.append(item["game_id"])
+            all_dec_map[item["game_id"]] = [score_bet365, score_wade, score_sbo, score_ysb8]
             if final_score < score_bet365:
                 all_dec_bet365_under = all_dec_bet365_under + 1
             if final_score < score_wade:
@@ -336,8 +336,8 @@ def run_decreasing_rule(directory, check_final_score=True):
         print(" --------- read " + str(all_dec_ysb8_under) + " all_dec_ysb8_under")
 
     print("=======================")
-    for id in all_dec_list:
-        print " ----- match min rule: " + str(id)
+    for id in all_dec_map:
+        print " ----- match min rule: " + str(id) + ", scores: " + str(all_dec_map[id])
 
     for id in not_all_dec_list:
         print " ----- not match min rule: " + str(id)
