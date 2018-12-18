@@ -98,7 +98,7 @@ class SplashSpider(Spider):
 
     def start_requests(self):
         for game_id in self.game_ids:
-            yield SplashRequest(OVER_UNDER_URL + game_id, self.parse, args = {'wait': '20'},
+            yield SplashRequest(OVER_UNDER_URL + game_id, self.parse, args = {'timeout': 1800, 'wait': '20'},
                 meta = {'game_id': game_id})
     
     def parse(self, response):

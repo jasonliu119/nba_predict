@@ -3,6 +3,7 @@ import datetime
 import calendar
 import pickle
 from my_oddsportal.items import WinNbaGame
+from sets import Set
 
 YEAR = '2018'
 
@@ -18,13 +19,17 @@ def test_strptime():
         print strptime(t)
 
 def game_str(game):
-    return " ************* type " + game['game_type'] + ", time " + str(strptime(game['time'])) + ", id " + game_id + ", home " + 
+    game_id = "0"
+    if 'game_id' in game:
+        game_id = game['game_id']
+
+    return " ************* type " + game['game_type'] + ", time " + str(strptime(game['time'])) + ", id " + game_id + ", home " + \
         game['home'] + ", away " + game['away'] + ", home_score " + game['home_score'] + ", away_score " + game['away_score']
 
 def read_game_meta(path = ''):
     game_meta = []
     if path == '':
-        path = './data/meta/win_game-2018-2019'
+        path = './data/collected-meta/win_game-2018-2019'
     f = open(path, 'r')
 
     count = 0
@@ -32,10 +37,7 @@ def read_game_meta(path = ''):
         try:
             count = count + 1
             game = pickle.load(f)
-            game_id = "0"
-            if 'game_id' in game:
-                game_id = game['game_id']
-            print(game_str(game))
+            # print(game_str(game))
             game_meta.append(game)
         except EOFError:
             f.close()
@@ -44,15 +46,32 @@ def read_game_meta(path = ''):
 
     return game_meta
 
+def is_previous_save_start_soon(id):
+    previous_set = Set()
+    with open('./data/log/processed_ids.txt', 'r') as f:
+        line = f.readline()
+        while line:
+            previous_set.add(line.strip())
+            line = f.readline()
+
+    if id in previous_set:
+        return True
+
+    with open('./data/log/processed_ids.txt', 'a+') as f:
+        f.write(id + '\n')
+
+    return False
+
+
 def find_game_start_soon(game_meta, time_granularity):
     game_id_start_soon = []
     now = int(time.time())
     for game in game_meta:
         if abs(now - strptime(game['time'])) <= time_granularity:
-            if game['id'] == '0':
+            if 'game_id' not in game or game['game_id'] == '0':
                 print "WARNING: game_id_start_soon got 0 id: " + game_str(game)
                 continue
-            game_id_start_soon.append(game['id'])
+            game_id_start_soon.append(game['game_id'])
 
     return game_id_start_soon
 
@@ -66,12 +85,19 @@ if __name__ == '__main__':
         # get the games that will start in 10 minuts
         game_start_soon = find_game_start_soon(game_meta, time_granularity)
 
-        if (len(game_start_soon) > 0):
-            game_str = " "
-            game_str.join(game_start_soon)
+        game_str = ''
 
+        for game in game_start_soon:
+            if is_previous_save_start_soon(str(game)):
+                continue
+
+            game_str += str(game)
+            game_str += ' '
+        game_str = '\"' + game_str.strip() + '\"'
+        print "--- start-soon games: " + game_str
+
+        if (game_str != "\"\"" and len(game_start_soon) > 0):
             # run the script to analyse the games starting soon
-
             import os
             os.system("sh run_decreasing_rule_with_seeds.sh {}".format(game_str))
 

@@ -53,7 +53,7 @@ class SplashSpider(Spider):
         for one_season_urls in self.seasoned_urls:
             i = i + 1
             season_str = str(self.seasons[i][0]) + "-" + str(self.seasons[i][1])
-            f = open('data/win_game-' + season_str, 'wb')
+            f = open('data/meta/win_game-' + season_str, 'wb')
             j = -1
             for one_month_url in one_season_urls:
                 j = j + 1
