@@ -11,7 +11,7 @@ from scrapy import Selector
 import pickle
 import re
 from sets import Set
-# from ..tools.send_message import send_email, send_sms
+from ..tools.send_message import send_email, send_sms
 
 REDDIT = 'https://www.reddit.com/'
 REDDIT_NBA_STREAM_MAIN = 'https://www.reddit.com/r/nbastreams/'
@@ -88,7 +88,7 @@ def get_game_file_name(url):
 
     if (len(teams) != 2):
         print '.....teams ' + str(teams)
-        # send_sms('wrong team names in reddit spider: ' + str(teams))
+        send_sms('wrong team names in reddit spider: ' + str(teams))
         links = url.split('/')
         return "./data/game_links/{}/{}.txt".format(now.strftime("%Y-%m-%d"), links[len(links) - 1])
 

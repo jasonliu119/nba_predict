@@ -1,11 +1,17 @@
+# -*- coding: utf-8 -*-
+import sys
+reload(sys)
+sys.setdefaultencoding("utf-8")
+
 import time
 import datetime
 import calendar
 import pickle
+import os
 from my_oddsportal.items import WinNbaGame
 from sets import Set
 
-YEAR = '2018'
+YEAR = str(datetime.datetime.now().year)
 
 def strptime(string):
     # sample: 10-30 00:30
@@ -75,10 +81,145 @@ def find_game_start_soon(game_meta, time_granularity):
 
     return game_id_start_soon
 
-if __name__ == '__main__':
+def get_team_id(chinese):
+    '''
+    01 Celtics
+    02 Nets
+    03 Knicks
+    04 76ers
+    05 Raptors
+    06 Warriors
+    07 Clippers
+    08 Lakers
+    09 Suns
+    10 Kings
+    11 Bulls
+    12 Cavaliers
+    13 Pistons
+    14 Pacers
+    15 Bucks
+    16 Hawks
+    17 Hornets
+    18 Heat
+    19 Magic
+    20 Wizards
+    21 Nuggets
+    22 Timberwolves
+    23 Thunder
+    24 Trail Blazers
+    25 Jazz
+    26 Mavericks
+    27 Rockets
+    28 Grizzlies
+    29 Pelicans
+    30 Spurs
+    '''
+    if "凯尔特" in chinese:
+        return "01"
+    if '篮网' in chinese:
+        return "02"
+    if '尼克斯' in chinese:
+        return "03"
+    if '76人' in chinese:
+        return "04"
+    if '猛龙' in chinese:
+        return "05"
+
+    if '勇士' in chinese:
+        return "06"
+    if '快船' in chinese:
+        return "07"
+    if '湖人' in chinese:
+        return "08"
+    if '太阳' in chinese:
+        return "09"
+    if '国王' in chinese:
+        return "10"
+
+    if '公牛' in chinese:
+        return "11"
+    if '骑士' in chinese:
+        return "12"
+    if '活塞' in chinese:
+        return "13"
+    if '步行者' in chinese:
+        return "14"
+    if '雄鹿' in chinese:
+        return "15"
+
+    if '老鹰' in chinese:
+        return "16"
+    if '黄蜂' in chinese:
+        return "17"
+    if '热火' in chinese:
+        return "18"
+    if '魔术' in chinese:
+        return "19"
+    if '奇才' in chinese:
+        return "20"
+
+    if '掘金' in chinese:
+        return "21"
+    if '森林狼' in chinese:
+        return "22"
+    if '雷霆' in chinese:
+        return "23"
+    if '开拓者' in chinese:
+        return "24"
+    if '爵士' in chinese:
+        return "25"
+
+    if '独行侠' in chinese:
+        return "26"
+    if '火箭' in chinese:
+        return "27"
+    if '灰熊' in chinese:
+        return "28"
+    if '鹈鹕' in chinese:
+        return "29"
+    if '马刺' in chinese:
+        return "30"
+
+def find_game_today_and_output():
+    from datetime import datetime
+    from pytz import timezone
+    import pytz
+    pst = pytz.timezone('America/Los_Angeles')
+    file = open("./today.txt", "wb")
+
+    now = int(time.time())
+    game_meta = read_game_meta()
+    now = datetime.now()
+    now = pst.localize(now)
+    for game in game_meta:
+        ts = strptime(game['time']) - 8 * 3600
+        datetime_obj = datetime.fromtimestamp(ts)
+        datetime_obj = pst.localize(datetime_obj)
+        if now.strftime("%Y-%m-%d") == datetime_obj.strftime("%Y-%m-%d"):
+            print game_str(game)
+            '''
+            live
+            09
+            10
+            1545264000
+            '''
+            file.write('live\n')
+            file.write(get_team_id(game['away']))
+            file.write('\n')
+            file.write(get_team_id(game['home']))
+            file.write('\n')
+            file.write(str(strptime(game['time'])) + '\n')
+            file.write('\n')
+
+    os.system("mkdir ~/nba/")
+    os.system("mv ./today.txt ~/nba/")
+
+def run_forever():
     time_granularity = 600
     check_time_granularity = 300
     while True:
+        find_game_today_and_output()
+
         # get the game meta of 2018-2019 season
         game_meta = read_game_meta()
 
@@ -98,8 +239,9 @@ if __name__ == '__main__':
 
         if (game_str != "\"\"" and len(game_start_soon) > 0):
             # run the script to analyse the games starting soon
-            import os
             os.system("sh run_decreasing_rule_with_seeds.sh {}".format(game_str))
 
         time.sleep(check_time_granularity)
 
+if __name__ == '__main__':
+    run_forever()
