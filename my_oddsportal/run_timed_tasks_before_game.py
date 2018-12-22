@@ -212,7 +212,7 @@ def find_game_today_and_output():
             file.write('\n')
 
     os.system("mkdir ~/nba/")
-    os.system("mv ./today.txt ~/nba/")
+    os.system("mv -f ./today.txt ~/nba/")
 
 def run_forever():
     time_granularity = 600
@@ -222,6 +222,11 @@ def run_forever():
 
         # get the game meta of 2018-2019 season
         game_meta = read_game_meta()
+
+        # only run reddit crawl when the game starts in 30 minutes
+        if len(find_game_start_soon(game_meta, 60 * 30)) > 0:
+            os.system("scrapy crawl reddit_main")
+            os.system("cp -R ./data/game_links/ ~/nba/")
 
         # get the games that will start in 10 minuts
         game_start_soon = find_game_start_soon(game_meta, time_granularity)

@@ -13,6 +13,10 @@ import re
 from sets import Set
 from ..tools.send_message import send_email, send_sms
 
+import sys
+reload(sys)
+sys.setdefaultencoding("utf-8")
+
 REDDIT = 'https://www.reddit.com/'
 REDDIT_NBA_STREAM_MAIN = 'https://www.reddit.com/r/nbastreams/'
 
@@ -84,13 +88,14 @@ def get_game_file_name(url):
     for name in names:
         i += 1
         if name.lower() in url:
+            if name.lower() == 'net' and 'hornet' in url:
+                continue
             teams.add(i)
 
     if (len(teams) != 2):
         print '.....teams ' + str(teams)
-        send_sms('wrong team names in reddit spider: ' + str(teams))
         links = url.split('/')
-        return "./data/game_links/{}/{}.txt".format(now.strftime("%Y-%m-%d"), links[len(links) - 1])
+        return "./data/game_links/{}/{}.txt".format(now.strftime("%Y-%m-%d"), "error-" + str(teams))
 
     team_list = list(teams)
     small = str(min(team_list))
@@ -110,6 +115,17 @@ def create_dir(filename):
         except OSError as exc: # Guard against race condition
             if exc.errno != errno.EEXIST:
                 raise
+
+def get_game_file_name_from_2_source(link, site, response):
+    filename = get_game_file_name(link)
+    if "error" in filename:
+        # f = open("./test.txt", "wb")
+        # f.write(response.text)
+        tittle = site.xpath("//head/title/text()").extract()[0]
+        filename = get_game_file_name(tittle)
+    if "error" in filename:
+        send_sms("wrong team names in reddit spider: " + filename)
+    return filename
 
 class SplashSpider(Spider):
     name = 'reddit_main'
@@ -142,8 +158,7 @@ class SplashSpider(Spider):
                         , args = {'timeout': 90.0, 'wait': '30'}
                         , meta = {'type': TYPE_GAME, 'link': link})
         elif type_meta == TYPE_GAME:
-            link = response.meta['link']
-            filename = get_game_file_name(link)
+            filename = get_game_file_name_from_2_source(response.meta['link'], site, response)
             create_dir(filename)
             f = open(filename, 'wb')
             tables = site.xpath('//table')
