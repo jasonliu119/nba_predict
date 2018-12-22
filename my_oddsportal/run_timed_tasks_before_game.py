@@ -218,35 +218,38 @@ def run_forever():
     time_granularity = 600
     check_time_granularity = 300
     while True:
-        find_game_today_and_output()
+        try:
+            find_game_today_and_output()
 
-        # get the game meta of 2018-2019 season
-        game_meta = read_game_meta()
+            # get the game meta of 2018-2019 season
+            game_meta = read_game_meta()
 
-        # only run reddit crawl when the game starts in 30 minutes
-        if len(find_game_start_soon(game_meta, 60 * 30)) > 0:
-            os.system("scrapy crawl reddit_main")
-            os.system("cp -R ./data/game_links/ ~/nba/")
+            # only run reddit crawl when the game starts in 30 minutes
+            if len(find_game_start_soon(game_meta, 60 * 30)) > 0:
+                os.system("scrapy crawl reddit_main")
+                os.system("cp -R ./data/game_links/ ~/nba/")
 
-        # get the games that will start in 10 minuts
-        game_start_soon = find_game_start_soon(game_meta, time_granularity)
+            # get the games that will start in 10 minuts
+            game_start_soon = find_game_start_soon(game_meta, time_granularity)
 
-        game_str = ''
+            game_str = ''
 
-        for game in game_start_soon:
-            if is_previous_save_start_soon(str(game)):
-                continue
+            for game in game_start_soon:
+                if is_previous_save_start_soon(str(game)):
+                    continue
 
-            game_str += str(game)
-            game_str += ' '
-        game_str = '\"' + game_str.strip() + '\"'
-        print "--- start-soon games: " + game_str
+                game_str += str(game)
+                game_str += ' '
+            game_str = '\"' + game_str.strip() + '\"'
+            print "--- start-soon games: " + game_str
 
-        if (game_str != "\"\"" and len(game_start_soon) > 0):
-            # run the script to analyse the games starting soon
-            os.system("sh run_decreasing_rule_with_seeds.sh {}".format(game_str))
+            if (game_str != "\"\"" and len(game_start_soon) > 0):
+                # run the script to analyse the games starting soon
+                os.system("sh run_decreasing_rule_with_seeds.sh {}".format(game_str))
 
-        time.sleep(check_time_granularity)
+            time.sleep(check_time_granularity)
+        except:
+            print "Error occur in run_timed_tasks_before_game"
 
 if __name__ == '__main__':
     run_forever()
