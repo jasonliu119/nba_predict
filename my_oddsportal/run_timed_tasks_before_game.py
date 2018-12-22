@@ -246,10 +246,10 @@ def run_forever():
             if (game_str != "\"\"" and len(game_start_soon) > 0):
                 # run the script to analyse the games starting soon
                 os.system("sh run_decreasing_rule_with_seeds.sh {}".format(game_str))
-
-            time.sleep(check_time_granularity)
         except:
             print "Error occur in run_timed_tasks_before_game"
+
+        time.sleep(check_time_granularity)
 
 if __name__ == '__main__':
     run_forever()
