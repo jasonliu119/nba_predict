@@ -1,0 +1,38 @@
+sudo pip install scrapy_splash
+
+nohup sudo docker run -p 8050:8050 scrapinghub/splash --max-timeout 3600 > /dev/null 2>binance-error-log &
+
+nohup python run_timed_meta_scrawl.py > /dev/null 2>meta_crawl_error.txt &
+
+nohup python run_timed_tasks_before_game.py > /dev/null 2>crawl_error.txt &
+
+nohup python run_timed_generate_index_html.py > /dev/null 2>gen_index_error.txt &
+
+sudo vim /etc/apache2/sites-available/sitename.conf
+
+<VirtualHost *:80>
+    ServerName www.nba.com
+    ServerAlias nba.com
+    ServerAdmin weijiejason119@gmail.com
+  
+    Alias /media/ /home/ubuntu/workspace/nba_stream/collected_static
+    Alias /static/ /home/ubuntu/workspace/nba_stream/collected_static
+  
+    <Directory /home/ubuntu/workspace/nba_stream/collected_static>
+        Require all granted
+    </Directory>
+
+    WSGIScriptAlias / /home/ubuntu/workspace/nba_stream/nba_stream/wsgi.py
+
+    <Directory /home/ubuntu/workspace/nba_stream/nba_stream>
+    <Files wsgi.py>
+        Require all granted
+    </Files>
+    </Directory>
+</VirtualHost>
+
+54.219.136.161
+
+sudo timedatectl set-timezone America/Los_Angeles
+
+sudo apachectl restart

@@ -95,7 +95,7 @@ def get_game_file_name(url):
     if (len(teams) != 2):
         print '.....teams ' + str(teams)
         links = url.split('/')
-        return "./data/game_links/{}/{}.txt".format(now.strftime("%Y-%m-%d"), "error-" + str(teams))
+        return "./data/game_links/{}/{}.txt".format(now.strftime("%Y-%m-%d"), "error-" + str(links[len(links) - 1]))
 
     team_list = list(teams)
     small = str(min(team_list))

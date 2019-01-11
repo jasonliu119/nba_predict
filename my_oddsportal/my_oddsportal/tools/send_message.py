@@ -13,6 +13,8 @@ def send_email(subject, text):
     #Send the mail
     msg = 'Subject: {}\n\n{}'.format(subject, text.encode('utf-8'))
     server.sendmail("jiefeijason119@gmail.com", "weijiejason119@gmail.com", msg)
+    server.sendmail("jiefeijason119@gmail.com", "18929720916@qq.com", msg)
+    server.sendmail("jiefeijason119@gmail.com", "shuji39@163.com", msg)
     server.quit()
 
 def send_sms(text):
@@ -31,3 +33,4 @@ def send_sms(text):
 
 if __name__ == '__main__':
     send_sms("this is twilio text")
+    send_email("this is testing from weijie", "this is testing from weijie")
