@@ -1,0 +1,4 @@
+15511 ttys000    0:00.03 sudo docker run -p 8050:8050 scrapinghub/splash
+15512 ttys000    0:00.09 docker run -p 8050:8050 scrapinghub/splash
+15688 ttys000    0:00.00 sh -c ps -a | grep "docker run" > grep.txt
+15690 ttys000    0:00.00 grep docker run
