@@ -124,7 +124,7 @@ def get_game_file_name_from_2_source(link, site, response):
         tittle = site.xpath("//head/title/text()").extract()[0]
         filename = get_game_file_name(tittle)
     if "error" in filename:
-        send_sms("wrong team names in reddit spider: " + filename)
+        print("wrong team names in reddit spider: " + filename)
     return filename
 
 class SplashSpider(Spider):
