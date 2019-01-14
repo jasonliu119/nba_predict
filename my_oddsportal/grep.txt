@@ -1,4 +1,5 @@
-15511 ttys000    0:00.03 sudo docker run -p 8050:8050 scrapinghub/splash
-15512 ttys000    0:00.09 docker run -p 8050:8050 scrapinghub/splash
-15688 ttys000    0:00.00 sh -c ps -a | grep "docker run" > grep.txt
-15690 ttys000    0:00.00 grep docker run
+root     15880  0.0  0.0   4504   796 pts/1    S+   15:26   0:00 /bin/sh -c sudo docker run -p 8050:8050 scrapinghub/splash --max-timeout 3600
+root     15881  0.0  0.0  64096  3800 pts/1    S+   15:26   0:00 sudo docker run -p 8050:8050 scrapinghub/splash --max-timeout 3600
+root     15882  0.0  0.3 266144 29024 pts/1    Sl+  15:26   0:00 docker run -p 8050:8050 scrapinghub/splash --max-timeout 3600
+root     16240  0.0  0.0   4504   840 pts/1    S+   15:32   0:00 sh -c ps -aux | grep "docker run" > grep.txt
+root     16242  0.0  0.0  21292  1000 pts/1    S+   15:32   0:00 grep docker run

@@ -13,7 +13,7 @@ def send_email(subject, text):
     #Send the mail
     msg = 'Subject: {}\n\n{}'.format(subject, text.encode('utf-8'))
     server.sendmail("jiefeijason119@gmail.com", "weijiejason119@gmail.com", msg)
-    server.sendmail("jiefeijason119@gmail.com", "18929720916@qq.com", msg)
+    server.sendmail("jiefeijason119@gmail.com", "dinghuanxiong@163.com", msg)
     server.sendmail("jiefeijason119@gmail.com", "shuji39@163.com", msg)
     server.quit()
 

@@ -6,7 +6,7 @@ GREP_FILE = 'grep.txt'
 
 # check whether a program is running by looking at the "ps -aux | grep <some str>"
 def check_is_running(grep_param, want_str):
-    os.system("ps -a | grep \"{}\" > {}".format(grep_param, GREP_FILE))
+    os.system("ps -aux | grep \"{}\" > {}".format(grep_param, GREP_FILE))
     content = ''
     with open(GREP_FILE) as f:
         content = f.read()
@@ -33,7 +33,7 @@ def loop_and_check(cmd, grep_param, want_str):
             time.sleep(3 * 60)
 
 if __name__ == "__main__":
-    cmd = 'sudo docker run -p 8050:8050 scrapinghub/splash'
+    cmd = 'sudo docker run -p 8050:8050 scrapinghub/splash --max-timeout 3600'
     grep_param = 'docker run'
     want_str = 'sudo docker run -p'
     loop_and_check(cmd, grep_param, want_str) 
