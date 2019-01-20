@@ -118,7 +118,7 @@ def get_team_id(chinese):
         return "01"
     if '篮网' in chinese:
         return "02"
-    if '尼克斯' in chinese:
+    if '纽约' in chinese:
         return "03"
     if '76人' in chinese:
         return "04"
