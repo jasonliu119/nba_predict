@@ -1,7 +1,7 @@
 # nba_predict
 
 # 阅读历史数据
-（1）首先，你要pip install scrapy<br />
+（1）首先，你要pip install Scrapy. More details: https://doc.scrapy.org/en/latest/intro/install.html<br />
 （2）目前有两种历史数据：meta数据 和 over-under数据<br />
 （3）meta数据的定义是在nba_predict/my_oddsportal/my_oddsportal/items.py的 WinNbaGame，包含一场历史比赛的基本信息。<br />
 
