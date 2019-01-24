@@ -1,7 +1,7 @@
 import pickle
 from ..items import WinNbaGame
 
-f = open('./data/meta/win_game-2018-2019', 'r')
+f = open('./data/meta/win_game-2017-2018', 'r')
 count = 0
 
 while True:
