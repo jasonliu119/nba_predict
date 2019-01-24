@@ -34,18 +34,18 @@ class SplashTestItem(scrapy.Item):
     # url = scrapy.Field()
 
 class WinNbaGame(scrapy.Item):
-    game_id = scrapy.Field()
-    home = scrapy.Field()
-    away = scrapy.Field()
-    home_score = scrapy.Field()
-    away_score = scrapy.Field()
-    time = scrapy.Field()
-    game_type = scrapy.Field()
+    game_id = scrapy.Field() # game 唯一的id
+    home = scrapy.Field() # 主队名字
+    away = scrapy.Field() # 客队名字
+    home_score = scrapy.Field() # 主队最终得分
+    away_score = scrapy.Field() # 客队最终得分
+    time = scrapy.Field() # 比赛开始时间
+    game_type = scrapy.Field() # 比赛类型：常规赛，季后赛，季前赛
 
 class WinOverUnderItem(scrapy.Item):
     game_id = scrapy.Field()
     title = scrapy.Field()
-    # the following fields are array [time, score, odd_over, odd_under, is_purple]
+    # the following fields are array [time, score, odd_over, odd_under, is_after_game_start]
     # 澳门
     macau = scrapy.Field()
     # 易胜博

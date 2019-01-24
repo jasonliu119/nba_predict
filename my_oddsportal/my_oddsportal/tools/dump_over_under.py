@@ -10,7 +10,7 @@ count = 0
 class WinOverUnderItem(scrapy.Item):
     game_id = scrapy.Field()
     title = scrapy.Field()
-    # the following fields are dict <time: [total score, odd_1, odd_2, is_purple]>
+    # the following fields are array [time, total score, odd_1, odd_2, is_after_game_start]
     # 澳门
     macau = scrapy.Field()
     # 易胜博
