@@ -23,9 +23,11 @@ REDDIT_NBA_STREAM_MAIN = 'https://www.reddit.com/r/nbastreams/'
 # page types
 TYPE_MAIN = "main"
 TYPE_GAME = "game"
+TYPE_LINK = "link"
 
 MAIN_GAME_DIV_CLASS = "SQnoC3ObvgnGjWt90zD9Z"
 GAME_TABLE_CLASS = "s90z9tc-19 iDFCDm"
+GAME_LINK_CLASS = "usertext-body may-blank-within md-container"
 
 def get_game_file_name(url):
     '''
@@ -129,12 +131,9 @@ def get_game_file_name_from_2_source(link, site, response):
 
 class SplashSpider(Spider):
     name = 'reddit_main'
+    count = 0
 
     def start_requests(self):
-        yield SplashRequest(REDDIT_NBA_STREAM_MAIN
-            , self.parse
-            , args = {'timeout': 90.0, 'wait': '30'}
-            , meta = {'type': TYPE_MAIN})
         yield SplashRequest(REDDIT_NBA_STREAM_MAIN
             , self.parse
             , args = {'timeout': 90.0, 'wait': '30'}
@@ -171,8 +170,29 @@ class SplashSpider(Spider):
                         for row in rows:
                             link = row.xpath('./td[2]/a/@href').extract()[0]
                             text = row.xpath('./td[2]/a/text()').extract()[0]
-                            print " -- link: " + link + ", text: " + text
-                            f.write(text + "\n" + link + "\n")
+
+                            if 'r/nbastreams' in link:
+                                yield SplashRequest(REDDIT + link
+                                    , self.parse
+                                    , args = {'timeout': 90.0, 'wait': '30'}
+                                    , meta = {'type': TYPE_LINK, 'filename': filename})
+                            else:
+                                f.write(text + "\n" + link + "\n")
+        elif type_meta == TYPE_LINK:
+            # ff = open('test-page-' + str(self.count) + '.txt', 'wb')
+            # self.count = self.count + 1
+            # ff.write(response.text)
+            filename = response.meta['filename']
+            create_dir(filename)
+            f = open(filename, 'wb')
+
+            a_xpath = "//*[matches(@id, '^form-t1_.*$')]/div/div/p/a"
+            games = site.xpath(a_xpath)
+            for game in games:
+                link = game.xpath('./@href').extract()[0]
+                print " -- parsed link " + link
+                tittle = game.xpath('./text()').extract()[0]
+                f.write(tittle + "\n" + link + "\n")
 
 
         
