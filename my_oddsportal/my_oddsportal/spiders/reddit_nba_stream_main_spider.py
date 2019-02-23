@@ -25,6 +25,8 @@ TYPE_MAIN = "main"
 TYPE_GAME = "game"
 TYPE_LINK = "link"
 
+TIME_OUT = 1800.0
+
 MAIN_GAME_DIV_CLASS = "SQnoC3ObvgnGjWt90zD9Z"
 GAME_TABLE_CLASS = "s90z9tc-19 iDFCDm"
 GAME_LINK_CLASS = "usertext-body may-blank-within md-container"
@@ -129,6 +131,91 @@ def get_game_file_name_from_2_source(link, site, response):
         print("wrong team names in reddit spider: " + filename)
     return filename
 
+script = """
+function main(splash)
+  splash.private_mode_enabled = false
+  local url = splash.args.url
+  assert(splash:go(url))
+  assert(splash:wait(10))
+  return {
+    html = splash:html(),
+    png = splash:png(),
+    har = splash:har(),
+  }
+end
+"""
+
+script1 = """
+function main(splash)
+    local num_scrolls = 10
+    local scroll_delay = 1.0
+
+    local scroll_to = splash:jsfunc("window.scrollTo")
+    local get_body_height = splash:jsfunc(
+        "function() {return document.body.scrollHeight;}"
+    )
+    assert(splash:go(splash.args.url))
+    splash:wait(splash.args.wait)
+
+    for _ = 1, num_scrolls do
+        scroll_to(0, get_body_height())
+        splash:wait(scroll_delay)
+    end        
+    return splash:html()
+end
+"""
+
+script2 = """
+function scroll_to(splash, x, y)
+  local js = string.format(
+    "window.scrollTo(%s, %s);", 
+    tonumber(x), 
+    tonumber(y)
+  )
+  return splash:runjs(js)
+end
+
+
+function get_doc_height(splash)
+  return splash:runjs([[
+    Math.max(
+        Math.max(document.body.scrollHeight, document.documentElement.scrollHeight),
+        Math.max(document.body.offsetHeight, document.documentElement.offsetHeight),
+        Math.max(document.body.clientHeight, document.documentElement.clientHeight)
+    )
+  ]])
+end
+
+
+function scroll_to_bottom(splash)
+  local y = get_doc_height(splash)
+  return scroll_to(splash, 0, y)
+end
+
+
+function main(splash)
+
+  -- e.g. http://infiniteajaxscroll.com/examples/basic/page1.html
+  local url = splash.args.url
+  assert(splash:go(url))
+  assert(splash:wait(0.5))
+  splash:stop()
+  
+  for i=1,10 do
+    scroll_to_bottom(splash)    
+    assert(splash:wait(0.2))
+  end
+
+  splash:set_viewport("full")
+
+  return {
+    html = splash:html(),
+    png = splash:png{width=640},
+    har = splash:har(),
+  }
+end
+"""
+
 class SplashSpider(Spider):
     name = 'reddit_main'
     count = 0
@@ -136,7 +223,9 @@ class SplashSpider(Spider):
     def start_requests(self):
         yield SplashRequest(REDDIT_NBA_STREAM_MAIN
             , self.parse
-            , args = {'timeout': 90.0, 'wait': '30'}
+            , endpoint='execute'
+            , cache_args=['lua_source']
+            , args = {'timeout': TIME_OUT, 'wait': '30', 'lua_source': script}
             , meta = {'type': TYPE_MAIN})
 
     def parse(self, response):
@@ -145,16 +234,21 @@ class SplashSpider(Spider):
         print "in parse, got type: " + type_meta
 
         if type_meta == TYPE_MAIN:
+            ff = open('test-TYPE_MAIN-' + '.txt', 'wb')
+            
+            ff.write(response.text)
             games = site.xpath("//a[contains(@class, '{}')]".format(MAIN_GAME_DIV_CLASS))
             for game in games:
+                self.count = self.count + 1
                 link = game.xpath('./@href').extract()[0]
                 tittle = game.xpath('./h2/text()').extract()[0]
+                print " -- No." + str(self.count) + " " + tittle + " " + link
 
                 if "Game Thread:" in tittle:
-                    print "From main page: game link: " + link + ", tittle: " + tittle
+                    print " -- Game Thread No." + str(self.count) + ", from main page: game link: " + link + ", tittle: " + tittle + "\n\n"
                     yield SplashRequest(REDDIT + link
                         , self.parse
-                        , args = {'timeout': 90.0, 'wait': '30'}
+                        , args = {'timeout': TIME_OUT, 'wait': '30'}
                         , meta = {'type': TYPE_GAME, 'link': link})
         elif type_meta == TYPE_GAME:
             filename = get_game_file_name_from_2_source(response.meta['link'], site, response)
@@ -174,7 +268,7 @@ class SplashSpider(Spider):
                             if 'r/nbastreams' in link:
                                 yield SplashRequest(REDDIT + link
                                     , self.parse
-                                    , args = {'timeout': 90.0, 'wait': '30'}
+                                    , args = {'timeout': TIME_OUT, 'wait': '30'}
                                     , meta = {'type': TYPE_LINK, 'filename': filename})
                             else:
                                 f.write(text + "\n" + link + "\n")
@@ -184,7 +278,7 @@ class SplashSpider(Spider):
             # ff.write(response.text)
             filename = response.meta['filename']
             create_dir(filename)
-            f = open(filename, 'wb')
+            f = open(filename, 'a')
 
             a_xpath = "//*[contains(@id, 'form-t1_')]/div/div/p/a"
             games = site.xpath(a_xpath)
