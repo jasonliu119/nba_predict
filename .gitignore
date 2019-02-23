@@ -1,3 +1,6 @@
 data/
 collected-meta/
 grep.txt
+*.pyc
+my_oddsportal/data/
+
