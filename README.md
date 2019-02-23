@@ -30,7 +30,7 @@ python -m my_oddsportal.tools.dump_over_under
 # How to run crawler
 
 Run splash with docker:
-sudo docker run -p 8050:8050 scrapinghub/splash
+sudo docker run -p 8050:8050 scrapinghub/splash --max-timeout 3600
 
 Run predict:
 sh run_decreasing_rule_with_seeds.sh "325987 325988 325989 325990"
