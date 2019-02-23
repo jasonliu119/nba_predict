@@ -186,7 +186,7 @@ class SplashSpider(Spider):
             create_dir(filename)
             f = open(filename, 'wb')
 
-            a_xpath = "//*[matches(@id, '^form-t1_.*$')]/div/div/p/a"
+            a_xpath = "//*[contains(@id, 'form-t1_')]/div/div/p/a"
             games = site.xpath(a_xpath)
             for game in games:
                 link = game.xpath('./@href').extract()[0]
