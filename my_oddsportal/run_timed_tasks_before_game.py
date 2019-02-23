@@ -227,6 +227,7 @@ def run_forever():
             # only run reddit crawl when the game starts in 30 minutes
             if len(find_game_start_soon(game_meta, 60 * 30)) > 0:
                 os.system("scrapy crawl reddit_main")
+                os.system("scrapy crawl nba_streams")
                 os.system("cp -R ./data/game_links/ ~/nba/")
 
             # get the games that will start in 10 minuts
