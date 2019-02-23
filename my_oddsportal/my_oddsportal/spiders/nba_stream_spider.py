@@ -88,6 +88,14 @@ def get_game_file_name(url):
                 continue
             teams.add(i)
 
+    # for net and hornet
+    if len(teams) < 2:
+        net_i = url.find('net')
+        hornet_i = url.find('hornet')
+        if net_i >= 0 and hornet_i >= 0 and net_i != hornet_i:
+            teams.add(2)
+            teams.add(17)
+
     if (len(teams) != 2):
         print '.....teams ' + str(teams)
         links = url.split('/')
