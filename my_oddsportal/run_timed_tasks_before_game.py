@@ -214,6 +214,9 @@ def find_game_today_and_output():
     os.system("mkdir ~/nba/")
     os.system("mv -f ./today.txt ~/nba/")
 
+def has_today_dir(dir_name):
+    return os.path.exists(dir_name)
+
 def run_forever():
     time_granularity = 600
     check_time_granularity = 300
@@ -224,8 +227,16 @@ def run_forever():
             # get the game meta of 2018-2019 season
             game_meta = read_game_meta()
 
+            from datetime import datetime
+            dir_name = "~/nba/game_links/{}".format(datetime.now().strftime("%Y-%m-%d"))
+            has_dir = has_today_dir(dir_name)
+            if has_dir:
+                print " -- {} exists".format(dir_name)
+            else:
+                print " -- {} NOT exist".format(dir_name)
+
             # only run reddit crawl when the game starts in 30 minutes
-            if len(find_game_start_soon(game_meta, 60 * 30)) > 0:
+            if len(find_game_start_soon(game_meta, 60 * 30)) > 0 or not has_dir:
                 os.system("scrapy crawl reddit_main")
                 os.system("scrapy crawl nba_streams")
                 os.system("cp -R ./data/game_links/ ~/nba/")
@@ -247,8 +258,8 @@ def run_forever():
             if (game_str != "\"\"" and len(game_start_soon) > 0):
                 # run the script to analyse the games starting soon
                 os.system("sh run_decreasing_rule_with_seeds.sh {}".format(game_str))
-        except:
-            print "Error occur in run_timed_tasks_before_game"
+        except Exception as e:
+            print "Error occur in run_timed_tasks_before_game " + str(e)
 
         time.sleep(check_time_granularity)
 
