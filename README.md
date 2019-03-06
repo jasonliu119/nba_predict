@@ -52,7 +52,7 @@ nohup python run_timed_tasks_before_game.py > before.txt 2>before_error.txt &
 ```
 in nba_stream:
 ```bash
-nohup python run_timed_generate_index_html.py > generate_index.txt 2>generate_index_error.txt &
+nohup python run_timed_generate_index_html.py /home/ubuntu/ > generate_index.txt 2>generate_index_error.txt &
 ```
 
 
