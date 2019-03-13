@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html amp lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base target="_blank">
+    <title>NBA streams! NBA Live for Free! Watch all today's NBA games online!</title>
+    <link rel="icon" href="/static/ico.png">
+NBA streams! All NBA Today's Games Live for Free! Links collected from the web & all verified.
+
+<style type="text/css">
+.game_link {
+    text-indent: 0px;
+    font-size: 16pt;
+}
+</style>
+
+<script type="text/javascript">
+    function getLocalTime(sec) {     
+       return new Date(parseInt(sec) * 1000).toLocaleString("en-US", {timeZoneName: "short"}).replace(/:\d{1,2}$/,' ');     
+    }
+    window.onload=function(){
+        var array = document.getElementsByClassName("game_time");
+        for (var i = 0; i < array.length; i++) {
+            var ts = array[i];
+            ts.innerText = getLocalTime(parseInt(ts.innerText, 10));
+        }
+    }
+</script>
+
+</head>
+<body>
+
+<p></p>
+<p></p>
+
+<p style="text-align:center;">
+<img src="/static/NBA-LIVE.png" title="NBA logo" width="200" height="200">
+</p>
+
+<p></p>
+<p></p>
+
+<table align="center" style="width: 100%;"  rules="rows"   cellspacing="20" title="NBA streams website links table">
+<tbody>
+<tr>
+<th align="center" title="NBA away team">     AWAY TEAM</th>
+<th align="center" title="NBA streams">TODAY'S LINKS</th>
+<th align="center" title="NBA home team">     HOME TEAM</th>
+</tr>
+<p></p>
+
+@@@
+
+</tbody>
+</table>
+
+<p>
+    DISCLAIMER : None of the videos are hosted by this site. This site is not responsible for the legality of the content. For legal issues, please contact appropriate media file owners/hosters. If you have any other questions, please contact email: jiefeijason119 at gmail.com
+. 
+</p>
+
+</body>
+</html>
