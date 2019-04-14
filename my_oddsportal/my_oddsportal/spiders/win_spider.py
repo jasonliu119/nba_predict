@@ -102,10 +102,10 @@ class SplashSpider(Spider):
             if len(game_type) == 0:
                 self.logger.debug("date line " + game_type_td.extract()[0])
                 continue
-            type_normal = "常规赛"
-            if type_normal.decode('utf-8') not in game_type[0]:
-                self.logger.debug("date line " + game_type[0])
-                continue
+            # type_normal = "常规赛"
+            # if type_normal.decode('utf-8') not in game_type[0]:
+            #     self.logger.debug("date line " + game_type[0])
+            #     continue
             game['game_type'] = game_type[0]
 
             time_str = game_tr.xpath('./td[2]/text()').extract()[0]
