@@ -18,8 +18,8 @@ def send_email(subject, text):
     server.quit()
 
 def send_sms(text):
-    account_sid = 'AC21a4e130d3f5fb520cf7042f971457f1'
-    auth_token = '2ebbba5c686cde6895342f3f021c29ad'
+    account_sid = ''
+    auth_token = ''
     client = Client(account_sid, auth_token)
 
     message = client.messages \
